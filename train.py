@@ -58,21 +58,23 @@ def train():
                 old_theta1 = old_data['theta1']
                 json_file.close()
 
-    with open('data.json', 'w') as json_file:
-        json.dump({'theta0': the0, 'theta1' : the1}, json_file)
-        json_file.close()
-
     print(f'Les valeurs ont été mises à jour, enregistrées dans le data.json et sont égales á theta0: {the0} et theta1: {the1}')
 
     plt.scatter(data['km'], data['price'])
     plt.title('Repartition du prix selon le kilometrage')
     plot_x = data.km.values
     plot_y = the1 * plot_x + the0
-    plot_y_old = old_theta1 * plot_x + old_theta0
-    plt.plot(plot_x, plot_y_old, '-r', label='Ancien modèle')
+    if os.path.exists('data.json'):
+        plot_y_old = old_theta1 * plot_x + old_theta0
+        plt.plot(plot_x, plot_y_old, '-r', label='Ancien modèle')
     plt.plot(plot_x, plot_y, '-g', label='Nouveau modèle')
     plt.xlabel('Kilometres')
     plt.ylabel('Prix')
+
+    with open('data.json', 'w') as json_file:
+        json.dump({'theta0': the0, 'theta1' : the1}, json_file)
+        json_file.close()
+
     plt.show()
     
 if __name__ == '__main__':
